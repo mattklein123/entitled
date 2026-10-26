@@ -9,7 +9,7 @@ A VS Code extension that customizes window titles to show the information you ac
 ## ✨ Features
 
 - 🏷️ **Smart Window Titles**: Display workspace, repository, branch, filename, and timestamps
-- 🌳 **Git Integration**: Automatically detects repository name and branch using VS Code's Git API  
+- 🌳 **Git Integration**: Automatically detects repository name and branch using VS Code's Git API
 - ⚙️ **Fully Customizable**: Create your own title patterns with template variables
 - 🔄 **Real-time Updates**: Titles update automatically when you switch files, lose focus, or change branches
 - 🎯 **Smart Fallbacks**: Use `||` syntax for graceful degradation when variables are empty
@@ -23,6 +23,25 @@ A VS Code extension that customizes window titles to show the information you ac
 3. Your window title will automatically show: `workspace-name [branch-name] filename.ext - VSCode`
 
 To enable smart fallbacks, try: `{workspace || repo || filename} [{branch}] (last: {timestamp})`
+
+## Local Build
+
+This local build activates after startup and listens for Git HEAD changes,
+including repositories discovered after activation. In a multi-root workspace,
+the branch comes from the first workspace folder.
+
+```sh
+npm ci --ignore-scripts
+npm run test:git
+npm run lint
+npm run package -- --out entitled-0.1.13-local.vsix
+code --install-extension ./entitled-0.1.13-local.vsix --force
+```
+
+Reload the VS Code window after installation. Disable auto-updates for Entitled
+to keep Marketplace releases from replacing this local build. Publishing is not
+required. Dependency install scripts are unnecessary for compilation and packaging;
+the existing icon is included.
 
 ## 📋 Default Format
 
@@ -48,13 +67,17 @@ my-project [feature/new-feature] index.ts - VSCode
 ### Custom Title Patterns
 ```json
 {
-  "entitled.titlePattern": "{workspace} | {branch} | {filename}"
+  "entitled.titlePattern": "{workspaceFile || workspace} [{branch}] - VSCode"
 }
 ```
+
+Set `entitled.titlePattern` in User Settings or Workspace Settings. Do not edit
+`window.title` directly; the extension writes that setting automatically.
 
 **Available Variables:**
 
 - `{workspace}` - Workspace or folder name
+- `{workspaceFile}` - Saved workspace filename without the `.code-workspace` suffix; empty for single-folder and unsaved workspaces
 - `{repo}` - Git repository name (extracted from git config)
 - `{branch}` - Current git branch
 - `{filename}` - Active file name
@@ -149,7 +172,7 @@ npm run package
 
 - ✅ 31 comprehensive tests covering all functionality
 - ✅ Title component extraction and composition
-- ✅ Git branch detection and repository name extraction with fallbacks  
+- ✅ Git branch detection and repository name extraction with fallbacks
 - ✅ Fallback pattern parsing and evaluation
 - ✅ Timestamp functionality and focus loss detection
 - ✅ Configuration handling and edge cases

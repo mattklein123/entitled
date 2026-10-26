@@ -11,7 +11,10 @@ tsconfig.json
 .vscode-test/**
 .vscode-test-web/**
 test/**
+out/test/**
 coverage/**
+.tmp/**
+*.vsix
 
 # Dependencies
 node_modules/**

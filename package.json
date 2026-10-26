@@ -2,7 +2,7 @@
   "name": "entitled",
   "displayName": "Entitled - Custom Window Titles",
   "description": "Customize VS Code window titles with workspace, branch, and filename information",
-  "version": "0.1.10",
+  "version": "0.1.13",
   "publisher": "ASHURTECHNET",
   "repository": {
     "type": "git",
@@ -32,7 +32,12 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionDependencies": [
+    "vscode.git"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -63,7 +68,7 @@
         "entitled.titlePattern": {
           "type": "string",
           "default": "{workspace} {branch} {filename} - VSCode",
-          "description": "Custom title pattern with variable substitution and smart fallbacks. Variables: {workspace}, {repo}, {branch}, {filename}, {timestamp}. Use || for fallbacks: {workspace || repo || filename} will use the first non-empty value. Examples: '{workspace || repo} [{branch}] (last: {timestamp})' or '{timestamp} | {workspace || repo || filename}'"
+          "description": "Custom title pattern with variable substitution and smart fallbacks. Variables: {workspace}, {workspaceFile}, {repo}, {branch}, {filename}, {timestamp}. {workspaceFile} is the saved workspace filename without the .code-workspace suffix, or empty for single-folder and unsaved workspaces. Use || for fallbacks: {workspaceFile || workspace || repo || filename} will use the first non-empty value. Examples: '{workspaceFile || workspace} [{branch}]' or '{timestamp} | {workspace || repo || filename}'"
         }
       }
     }
@@ -76,6 +81,7 @@
     "lint": "eslint src --ext ts",
     "lint:fix": "eslint src --ext ts --fix",
     "test": "node ./src/test/runTest-ci-friendly.js",
+    "test:git": "npm run compile && node --test src/test/gitEvents.test.js",
     "test:integration": "node ./out/test/runTest.js",
     "test:coverage": "nyc npm run test:integration",
     "test:validate": "node ./validate-tests.js",

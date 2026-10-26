@@ -3,14 +3,11 @@ import { WindowTitleService } from './services/WindowTitleService';
 
 let windowTitleService: WindowTitleService;
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "entitled" is now active!');
 
 	// Initialize the window title service
 	windowTitleService = new WindowTitleService();
-
-	// Initial title update
-	windowTitleService.updateTitle();
 
 	// Register the hello world command for testing
 	let helloWorldDisposable = vscode.commands.registerCommand('entitled.helloWorld', () => {
@@ -33,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(refreshTitleDisposable);
 	context.subscriptions.push(resetTitleDisposable);
 	context.subscriptions.push(windowTitleService);
+	await windowTitleService.initialize();
 }
 
 export function deactivate() {
